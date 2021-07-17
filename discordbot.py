@@ -44,20 +44,20 @@ help = discord.Embed(
     description='募集したい内容を、人数を設定して募集をかけることが出きるbotです。\n'
     '各コマンドの使い方は以下を御参照ください。\n',
     color=discord.Color.red())
-# help ?at使い方
+# help !at使い方
 help.add_field(
-    name=':loudspeaker: ?at コマンドの使い方\n',
+    name=':loudspeaker: !at コマンドの使い方\n',
     value='募集の際に使うこのbotの基本となるコマンドです。\n'
     '\n'
     '記述方法は\n'
-    '?at 「募集要項」 「人数」「自由記述文(必要に応じて)」\n'
+    '!at 「募集要項」 「人数」「自由記述文(必要に応じて)」\n'
     'となります。\n'
     '\n'
     '※各要素に必ず半角スペースを１つ設けてください。\n'
     '※鍵かっこをつける必要はありません。\n'
     '※合計９人まで募集をかけられます。\n'
     '\n'
-    '例: ?at APEX 2\n',
+    '例: !at APEX 2\n',
     inline=False)
 # help リアクションについて
 help.add_field(
@@ -72,9 +72,10 @@ help.add_field(
     '\n'
     '募集中止ボタンは押した時点で募集を取り消すことができます。\n')
 # help developer info
+#TODO: バージョンアップ時変更
 help.set_footer(
     text='made by Farrule\n'
-    '@bot_chan verstion: 2.0. α',
+    '@bot_chan verstion: 2.0.1α',
     icon_url='https://cdn.discordapp.com/'
     'attachments/865123798813900820/865258524971106314/Farrule_logo2.jfif')
 
@@ -90,7 +91,8 @@ async def on_ready():
     print(sys.version)  # Python バージョン
     print()
     print('-------------------------------------------------------------------------------')
-    await client.change_presence(activity=discord.Game(name='@bot_chan v2.0. α'))
+    #TODO: バージョンアップ時変更
+    await client.change_presence(activity=discord.Game(name='@bot_chan v2.0.1α'))
 
 
 # ? コマンド入力時処理
@@ -106,8 +108,8 @@ async def on_message(mes):
     global m
     args = mes.content.split()
 
-    # TODO: ?at 処理
-    if args[0] == '?at':
+    #! !at 処理
+    if args[0] == '!at':
         if flag == True:
             m = int(args[2])
             if m <= 9:
@@ -147,17 +149,17 @@ async def on_message(mes):
             await mes.channel.send('募集中の要項があります')
             return
 
-    # TODO: ?help 処理
-    if args[0] == '?help':
+    #! !help 処理
+    if args[0] == '!help':
         await mes.channel.send(embed=help)
 
-    # TODO: ?atre 処理
-    if args[0] == '?atre':
+    #! !atre 処理
+    if args[0] == '!atre':
         await mes.channel.send('リセット処理を実行')
         flag = True
 
 
-# ? 各リアクションボタン処理
+#? 各リアクションボタン処理
 @client.event
 async def on_raw_reaction_add(reaction):
     global flag
