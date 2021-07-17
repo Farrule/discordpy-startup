@@ -1,6 +1,6 @@
 """
 ＿/＿/＿/＿/＿/＿/＿/＿/
-＿/   ver 2.3.0β   ＿/
+＿/   ver 2.3.1β   ＿/
 _/＿/＿/＿/＿/＿/＿/＿/
 """
 # TODO: コマンドフィックス変更
@@ -21,7 +21,6 @@ o_flag = True
 b_count = 0
 m_count = 0
 
-
 # UNICODE
 ONE = '\N{Large Red Circle}'
 TWO = '\N{Large Blue Circle}'
@@ -33,7 +32,7 @@ SEVEN = '\N{Large Brown Circle}'
 EIGHT = '\N{Medium Black Circle}'
 NINE = '\N{Medium White Circle}'
 CANCEL = '\N{SQUARED CL}'
-ERROR = '\N{NO ENTRY}'
+ERROR = '\N{WARNING SIGN}'
 
 # リアクションリスト
 REACTION_LIST = [
@@ -49,20 +48,20 @@ help = discord.Embed(
     description='募集したい内容を、人数を設定して募集をかけることが出きるbotです。\n'
     '各コマンドの使い方は以下を御参照ください。\n',
     color=discord.Color.red())
-# help !at使い方
+# help ?at使い方
 help.add_field(
-    name=':loudspeaker: !at コマンドの使い方\n',
+    name=':loudspeaker: ?at コマンドの使い方\n',
     value='募集の際に使うこのbotの基本となるコマンドです。\n'
     '\n'
     '記述方法は\n'
-    '!at 「募集要項」 「人数」「自由記述文(必要に応じて)」\n'
+    '?at 「募集要項」 「人数」\n'
     'となります。\n'
     '\n'
     '※各要素に必ず半角スペースを１つ設けてください。\n'
     '※鍵かっこをつける必要はありません。\n'
     '※合計９人まで募集をかけられます。\n'
     '\n'
-    '例: !at APEX 2\n',
+    '例: ?at APEX 2\n',
     inline=False)
 # help リアクションについて
 help.add_field(
@@ -80,7 +79,7 @@ help.add_field(
 #TODO: バージョンアップ時変更
 help.set_footer(
     text='made by Farrule\n'
-    '@bot_chan verstion: 2.3.0β',
+    '@bot_chan verstion: 2.3.1β',
     icon_url='https://cdn.discordapp.com/'
     'attachments/865123798813900820/865258524971106314/Farrule_logo2.jfif')
 
@@ -97,7 +96,7 @@ async def on_ready():
     print()
     print('-------------------------------------------------------------------------------')
     #TODO: バージョンアップ時変更
-    await client.change_presence(activity=discord.Game(name='@bot_chan v2.3.0β'))
+    await client.change_presence(activity=discord.Game(name='@bot_chan v2.3.1β'))
 
 
 # ? コマンド入力時処理
@@ -115,60 +114,49 @@ async def on_message(mes):
     global m_count
     global MEMBER_LIST
     global o_flag
+    global limit
+    global MEMBER_DIS
+    global bot_name
     args = mes.content.split()
 
-    #! !at 処理
-    if args[0] == '!at':
+    #! ?at 処理
+    if args[0] == '?at':
         if flag == True:
             m = int(args[2])
             if m <= 9:
-                if len(args) == 4:
-
-                    #! 自由文あり処理
-                    if re.compile(r'\d+').search(args[2]):
-                        host = mes.author.name
-                        MEMBER_LIST.append(host)
-                        bot_message = await mes.channel.send(
-                            f':loudspeaker: @here ***{args[1]}*** で ***{args[2]}*** 人募集中です。\n'
-                            f'{args[3]}')
-                        for x in range(m):
-                            await bot_message.add_reaction(REACTION_LIST[x])
-                        await bot_message.add_reaction(CANCEL)
-                        flag = False
-                    else:
-                        await mes.channel.send('__人数の項目__が不適切です。\n')
-
-                elif len(args) == 3:
-
-                    #! 自由文なし処理
-                    if re.compile(r'\d+').search(args[2]):
-                        host = mes.author.name
-                        MEMBER_LIST.append(host)
-                        bot_message = await mes.channel.send(
-                            f':loudspeaker: @here ***{args[1]}*** で ***{args[2]}*** 人募集中です。\n')
-                        for x in range(m):
-                            await bot_message.add_reaction(REACTION_LIST[x])
-                        await bot_message.add_reaction(CANCEL)
-                        flag = False
-                    else:
-                        await mes.channel.send('__人数の項目__が不適切です。\n')
-
+                if re.compile(r'\d+').search(args[2]):
+                    limit = args[2]
+                    host = mes.author.name
+                    MEMBER_LIST.append(host)
+                    MEMBER_DIS = ',    '.join(MEMBER_LIST)
+                    bot_message = await mes.channel.send(
+                        f':loudspeaker: @here ***{args[1]}*** で'
+                        f' ***{args[2]}*** /_{limit}_ 人募集中です。\n'
+                        f':pushpin: 参加者:\n       {MEMBER_DIS}')
+                    for x in range(m):
+                        await bot_message.add_reaction(REACTION_LIST[x])
+                    await bot_message.add_reaction(CANCEL)
+                    bot_name = bot_message.author.name
+                    flag = False
                 else:
-                    return
+                    await mes.channel.send(
+                        ':warning:  __人数の項目__が不適切です。\n')
             else:
-                await mes.channel.send('__９人以上__の募集はできません。\n')
+                await mes.channel.send(
+                    ':warning:  __９人以上__の募集はできません。\n')
                 return
         else:
-            await mes.channel.send('__募集中__の要項があります。\n')
+            await mes.channel.send(
+                ':warning:  __募集中__の要項があります。\n')
             return
 
-    #! !help 処理
-    if args[0] == '!help':
+    #! ?help 処理
+    if args[0] == '?help':
         await mes.channel.send(embed=help)
 
-    #! !atre 処理
-    if args[0] == '!atre':
-        await mes.channel.send('リセット処理を実行\n')
+    #! ?atre 処理
+    if args[0] == '?atre':
+        await mes.channel.send(':exclamation: リセット処理を実行\n')
         flag = True
         o_flag = True
         b_count = 0
@@ -227,7 +215,10 @@ async def on_raw_reaction_add(reaction):
     # メンバーリスト整列
     def b_process_3():
         global MEMBER_LIST
-        MEMBER_LIST = ',    '.join(MEMBER_LIST)
+        global MEMBER_DIS
+        if bot_name in MEMBER_LIST:
+            MEMBER_LIST.remove(bot_name)
+        MEMBER_DIS = ',    '.join(MEMBER_LIST)
 
     if b_count >= m + 1:
         #! CANCELボタン処理
@@ -250,15 +241,18 @@ async def on_raw_reaction_add(reaction):
                 return
             else:
                 b_process_1()
+                b_process_3()
                 await bot_message.clear_reaction(ONE)
                 await bot_message.edit(
-                    content=f':loudspeaker: @here ***{args[1]}*** で ***{args[2]}*** 人募集中です。\n')
+                    content=f':loudspeaker: @here ***{args[1]}*** で'
+                    f' ***{args[2]}*** /_{limit}_ 人募集中です。\n'
+                    f':pushpin: 参加者:\n       {MEMBER_DIS}')
                 if args[2] == '0':
                     await bot_message.clear_reaction(CANCEL)
                     b_process_3()
                     await bot_message.edit(
                         content=f'***{args[1]}*** の募集は__終了__しました。\n'
-                        f':pushpin: 参加者:\n       {MEMBER_LIST}')
+                        f':pushpin: 参加者:\n       {MEMBER_DIS}')
                     b_process_2()
 
         if reaction.emoji.name == TWO:
@@ -270,15 +264,18 @@ async def on_raw_reaction_add(reaction):
                 return
             else:
                 b_process_1()
+                b_process_3()
                 await bot_message.clear_reaction(TWO)
                 await bot_message.edit(
-                    content=f':loudspeaker: @here ***{args[1]}*** で ***{args[2]}*** 人募集中です。\n')
+                    content=f':loudspeaker: @here ***{args[1]}*** で'
+                    f' ***{args[2]}*** /_{limit}_ 人募集中です。\n'
+                    f':pushpin: 参加者:\n       {MEMBER_DIS}')
                 if args[2] == '0':
                     await bot_message.clear_reaction(CANCEL)
                     b_process_3()
                     await bot_message.edit(
                         content=f'***{args[1]}*** の募集は__終了__しました。\n'
-                        f':pushpin: 参加者:\n       {MEMBER_LIST}')
+                        f':pushpin: 参加者:\n       {MEMBER_DIS}')
                     b_process_2()
 
         if reaction.emoji.name == THREE:
@@ -290,15 +287,18 @@ async def on_raw_reaction_add(reaction):
                 return
             else:
                 b_process_1()
+                b_process_3()
                 await bot_message.clear_reaction(THREE)
                 await bot_message.edit(
-                    content=f':loudspeaker: @here ***{args[1]}*** で ***{args[2]}*** 人募集中です。\n')
+                    content=f':loudspeaker: @here ***{args[1]}*** で'
+                    f' ***{args[2]}*** /_{limit}_ 人募集中です。\n'
+                    f':pushpin: 参加者:\n       {MEMBER_DIS}')
                 if args[2] == '0':
                     await bot_message.clear_reaction(CANCEL)
                     b_process_3()
                     await bot_message.edit(
                         content=f'***{args[1]}*** の募集は__終了__しました。\n'
-                        f':pushpin: 参加者:\n       {MEMBER_LIST}')
+                        f':pushpin: 参加者:\n       {MEMBER_DIS}')
                     b_process_2()
 
         if reaction.emoji.name == FOUR:
@@ -310,15 +310,18 @@ async def on_raw_reaction_add(reaction):
                 return
             else:
                 b_process_1()
+                b_process_3()
                 await bot_message.clear_reaction(FOUR)
                 await bot_message.edit(
-                    content=f':loudspeaker: @here ***{args[1]}*** で ***{args[2]}*** 人募集中です。\n')
+                    content=f':loudspeaker: @here ***{args[1]}*** で'
+                    f' ***{args[2]}*** /_{limit}_ 人募集中です。\n'
+                    f':pushpin: 参加者:\n       {MEMBER_DIS}')
                 if args[2] == '0':
                     await bot_message.clear_reaction(CANCEL)
                     b_process_3()
                     await bot_message.edit(
                         content=f'***{args[1]}*** の募集は__終了__しました。\n'
-                        f':pushpin: 参加者:\n       {MEMBER_LIST}')
+                        f':pushpin: 参加者:\n       {MEMBER_DIS}')
                     b_process_2()
 
         if reaction.emoji.name == FIVE:
@@ -330,15 +333,18 @@ async def on_raw_reaction_add(reaction):
                 return
             else:
                 b_process_1()
+                b_process_3()
                 await bot_message.clear_reaction(FIVE)
                 await bot_message.edit(
-                    content=f':loudspeaker: @here ***{args[1]}*** で ***{args[2]}*** 人募集中です。\n')
+                    content=f':loudspeaker: @here ***{args[1]}*** で'
+                    f' ***{args[2]}*** /_{limit}_ 人募集中です。\n'
+                    f':pushpin: 参加者:\n       {MEMBER_DIS}')
                 if args[2] == '0':
                     await bot_message.clear_reaction(CANCEL)
                     b_process_3()
                     await bot_message.edit(
-                        content=f'{args[1]} の募集は__終了__しました。\n'
-                        f':pushpin: 参加者:\n       {MEMBER_LIST}')
+                        content=f'***{args[1]}*** の募集は__終了__しました。\n'
+                        f':pushpin: 参加者:\n       {MEMBER_DIS}')
                     b_process_2()
 
         if reaction.emoji.name == SIX:
@@ -350,15 +356,18 @@ async def on_raw_reaction_add(reaction):
                 return
             else:
                 b_process_1()
+                b_process_3()
                 await bot_message.clear_reaction(SIX)
                 await bot_message.edit(
-                    content=f':loudspeaker: @here ***{args[1]}*** で ***{args[2]}*** 人募集中です。\n')
+                    content=f':loudspeaker: @here ***{args[1]}*** で'
+                    f' ***{args[2]}*** /_{limit}_ 人募集中です。\n'
+                    f':pushpin: 参加者:\n       {MEMBER_DIS}')
                 if args[2] == '0':
                     await bot_message.clear_reaction(CANCEL)
                     b_process_3()
                     await bot_message.edit(
                         content=f'***{args[1]}*** の募集は__終了__しました。\n'
-                        f':pushpin: 参加者:\n       {MEMBER_LIST}')
+                        f':pushpin: 参加者:\n       {MEMBER_DIS}')
                     b_process_2()
 
         if reaction.emoji.name == SEVEN:
@@ -370,15 +379,18 @@ async def on_raw_reaction_add(reaction):
                 return
             else:
                 b_process_1()
+                b_process_3()
                 await bot_message.clear_reaction(SEVEN)
                 await bot_message.edit(
-                    content=f':loudspeaker: @here ***{args[1]}*** で ***{args[2]}*** 人募集中です。\n')
+                    content=f':loudspeaker: @here ***{args[1]}*** で'
+                    f' ***{args[2]}*** /_{limit}_ 人募集中です。\n'
+                    f':pushpin: 参加者:\n       {MEMBER_DIS}')
                 if args[2] == '0':
                     await bot_message.clear_reaction(CANCEL)
                     b_process_3()
                     await bot_message.edit(
                         content=f'***{args[1]}*** の募集は__終了__しました。\n'
-                        f':pushpin: 参加者:\n       {MEMBER_LIST}')
+                        f':pushpin: 参加者:\n       {MEMBER_DIS}')
                     b_process_2()
 
         if reaction.emoji.name == EIGHT:
@@ -390,15 +402,18 @@ async def on_raw_reaction_add(reaction):
                 return
             else:
                 b_process_1()
+                b_process_3()
                 await bot_message.clear_reaction(EIGHT)
                 await bot_message.edit(
-                    content=f':loudspeaker: @here ***{args[1]}*** で ***{args[2]}*** 人募集中です。\n')
+                    content=f':loudspeaker: @here ***{args[1]}*** で'
+                    f' ***{args[2]}*** /_{limit}_ 人募集中です。\n'
+                    f':pushpin: 参加者:\n       {MEMBER_DIS}')
                 if args[2] == '0':
                     await bot_message.clear_reaction(CANCEL)
                     b_process_3()
                     await bot_message.edit(
                         content=f'***{args[1]}*** の募集は__終了__しました。\n'
-                        f':pushpin: 参加者:\n       {MEMBER_LIST}')
+                        f':pushpin: 参加者:\n       {MEMBER_DIS}')
                     b_process_2()
 
         if reaction.emoji.name == NINE:
@@ -410,15 +425,18 @@ async def on_raw_reaction_add(reaction):
                 return
             else:
                 b_process_1()
+                b_process_3()
                 await bot_message.clear_reaction(NINE)
                 await bot_message.edit(
-                    content=f':loudspeaker: @here ***{args[1]}*** で ***{args[2]}*** 人募集中です。\n')
+                    content=f':loudspeaker: @here ***{args[1]}*** で'
+                    f' ***{args[2]}*** /_{limit}_ 人募集中です。\n'
+                    f':pushpin: 参加者:\n       {MEMBER_DIS}')
                 if args[2] == '0':
                     await bot_message.clear_reaction(CANCEL)
                     b_process_3()
                     await bot_message.edit(
                         content=f'***{args[1]}*** の募集は__終了__しました。\n'
-                        f':pushpin: 参加者:\n       {MEMBER_LIST}')
+                        f':pushpin: 参加者:\n       {MEMBER_DIS}')
                     b_process_2()
 
     else:
