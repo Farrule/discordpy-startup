@@ -1,6 +1,6 @@
 """
 ＿/＿/＿/＿/＿/＿/＿/＿/
-＿/   ver 2.2.0α   ＿/
+＿/   ver 2.3.0β   ＿/
 _/＿/＿/＿/＿/＿/＿/＿/
 """
 # TODO: コマンドフィックス変更
@@ -80,7 +80,7 @@ help.add_field(
 #TODO: バージョンアップ時変更
 help.set_footer(
     text='made by Farrule\n'
-    '@bot_chan verstion: 2.2.0α',
+    '@bot_chan verstion: 2.3.0β',
     icon_url='https://cdn.discordapp.com/'
     'attachments/865123798813900820/865258524971106314/Farrule_logo2.jfif')
 
@@ -97,7 +97,7 @@ async def on_ready():
     print()
     print('-------------------------------------------------------------------------------')
     #TODO: バージョンアップ時変更
-    await client.change_presence(activity=discord.Game(name='@bot_chan v2.2.0α'))
+    await client.change_presence(activity=discord.Game(name='@bot_chan v2.3.0β'))
 
 
 # ? コマンド入力時処理
@@ -126,6 +126,8 @@ async def on_message(mes):
 
                     #! 自由文あり処理
                     if re.compile(r'\d+').search(args[2]):
+                        host = mes.author.name
+                        MEMBER_LIST.append(host)
                         bot_message = await mes.channel.send(
                             f':loudspeaker: @here ***{args[1]}*** で ***{args[2]}*** 人募集中です。\n'
                             f'{args[3]}')
@@ -140,6 +142,8 @@ async def on_message(mes):
 
                     #! 自由文なし処理
                     if re.compile(r'\d+').search(args[2]):
+                        host = mes.author.name
+                        MEMBER_LIST.append(host)
                         bot_message = await mes.channel.send(
                             f':loudspeaker: @here ***{args[1]}*** で ***{args[2]}*** 人募集中です。\n')
                         for x in range(m):
