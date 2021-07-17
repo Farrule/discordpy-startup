@@ -49,20 +49,20 @@ help = discord.Embed(
     description='募集したい内容を、人数を設定して募集をかけることが出きるbotです。\n'
     '各コマンドの使い方は以下を御参照ください。\n',
     color=discord.Color.red())
-# help ?at使い方
+# help !at使い方
 help.add_field(
-    name=':loudspeaker: ?at コマンドの使い方\n',
+    name=':loudspeaker: !at コマンドの使い方\n',
     value='募集の際に使うこのbotの基本となるコマンドです。\n'
     '\n'
     '記述方法は\n'
-    '?at 「募集要項」 「人数」「自由記述文(必要に応じて)」\n'
+    '!at 「募集要項」 「人数」「自由記述文(必要に応じて)」\n'
     'となります。\n'
     '\n'
     '※各要素に必ず半角スペースを１つ設けてください。\n'
     '※鍵かっこをつける必要はありません。\n'
     '※合計９人まで募集をかけられます。\n'
     '\n'
-    '例: ?at APEX 2\n',
+    '例: !at APEX 2\n',
     inline=False)
 # help リアクションについて
 help.add_field(
@@ -117,8 +117,8 @@ async def on_message(mes):
     global o_flag
     args = mes.content.split()
 
-    #! ?at 処理
-    if args[0] == '?at':
+    #! !at 処理
+    if args[0] == '!at':
         if flag == True:
             m = int(args[2])
             if m <= 9:
@@ -158,12 +158,12 @@ async def on_message(mes):
             await mes.channel.send('__募集中__の要項があります。\n')
             return
 
-    #! ?help 処理
-    if args[0] == '?help':
+    #! !help 処理
+    if args[0] == '!help':
         await mes.channel.send(embed=help)
 
-    #! ?atre 処理
-    if args[0] == '?atre':
+    #! !atre 処理
+    if args[0] == '!atre':
         await mes.channel.send('リセット処理を実行\n')
         flag = True
         o_flag = True
