@@ -84,7 +84,7 @@ help.set_footer(
     'attachments/865123798813900820/865258524971106314/Farrule_logo2.jfif')
 
 
-# ! BOT起動時処理
+# ? BOT起動時処理
 @client.event
 async def on_ready():
     print('-------------------------------------------------------------------------------\n')
@@ -122,9 +122,9 @@ async def on_message(mes):
     #! !at 処理
     if args[0] == '!at':
         if flag == True:
-            m = int(args[2])
-            if m <= 9:
-                if re.compile(r'\d+').search(args[2]):
+            if re.compile(r'\d+').search(args[2]):
+                m = int(args[2])
+                if m <= 9:
                     limit = args[2]
                     host = mes.author.name
                     MEMBER_LIST.append(host)
@@ -140,11 +140,11 @@ async def on_message(mes):
                     flag = False
                 else:
                     await mes.channel.send(
-                        ':warning:  __人数の項目__が不適切です。\n')
+                        ':warning:  __９人以上__の募集はできません。\n')
                     return
             else:
                 await mes.channel.send(
-                    ':warning:  __９人以上__の募集はできません。\n')
+                    ':warning:  __人数の項目__が不適切です。\n')
                 return
         else:
             await mes.channel.send(
