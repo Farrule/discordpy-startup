@@ -1,6 +1,6 @@
 """
 ＿/＿/＿/＿/＿/＿/＿/＿/
-＿/   ver 2.3.1β   ＿/
+＿/   ver 2.3.2β   ＿/
 _/＿/＿/＿/＿/＿/＿/＿/
 """
 # TODO: コマンドフィックス変更
@@ -48,20 +48,20 @@ help = discord.Embed(
     description='募集したい内容を、人数を設定して募集をかけることが出きるbotです。\n'
     '各コマンドの使い方は以下を御参照ください。\n',
     color=discord.Color.red())
-# help ?at使い方
+# help !at使い方
 help.add_field(
-    name=':loudspeaker: ?at コマンドの使い方\n',
+    name=':loudspeaker: !at コマンドの使い方\n',
     value='募集の際に使うこのbotの基本となるコマンドです。\n'
     '\n'
     '記述方法は\n'
-    '?at 「募集要項」 「人数」\n'
+    '!at 「募集要項」 「人数」\n'
     'となります。\n'
     '\n'
     '※各要素に必ず半角スペースを１つ設けてください。\n'
     '※鍵かっこをつける必要はありません。\n'
     '※合計９人まで募集をかけられます。\n'
     '\n'
-    '例: ?at APEX 2\n',
+    '例: !at APEX 2\n',
     inline=False)
 # help リアクションについて
 help.add_field(
@@ -79,12 +79,12 @@ help.add_field(
 #TODO: バージョンアップ時変更
 help.set_footer(
     text='made by Farrule\n'
-    '@bot_chan verstion: 2.3.1β',
+    '@bot_chan verstion: 2.3.2β',
     icon_url='https://cdn.discordapp.com/'
     'attachments/865123798813900820/865258524971106314/Farrule_logo2.jfif')
 
 
-# ? BOT起動時処理
+# ! BOT起動時処理
 @client.event
 async def on_ready():
     print('-------------------------------------------------------------------------------\n')
@@ -96,7 +96,7 @@ async def on_ready():
     print()
     print('-------------------------------------------------------------------------------')
     #TODO: バージョンアップ時変更
-    await client.change_presence(activity=discord.Game(name='@bot_chan v2.3.1β'))
+    await client.change_presence(activity=discord.Game(name='@bot_chan v2.3.2β'))
 
 
 # ? コマンド入力時処理
@@ -119,8 +119,8 @@ async def on_message(mes):
     global bot_name
     args = mes.content.split()
 
-    #! ?at 処理
-    if args[0] == '?at':
+    #! !at 処理
+    if args[0] == '!at':
         if flag == True:
             m = int(args[2])
             if m <= 9:
@@ -141,6 +141,7 @@ async def on_message(mes):
                 else:
                     await mes.channel.send(
                         ':warning:  __人数の項目__が不適切です。\n')
+                    return
             else:
                 await mes.channel.send(
                     ':warning:  __９人以上__の募集はできません。\n')
@@ -150,12 +151,12 @@ async def on_message(mes):
                 ':warning:  __募集中__の要項があります。\n')
             return
 
-    #! ?help 処理
-    if args[0] == '?help':
+    #! !help 処理
+    if args[0] == '!help':
         await mes.channel.send(embed=help)
 
-    #! ?atre 処理
-    if args[0] == '?atre':
+    #! !atre 処理
+    if args[0] == '!atre':
         await mes.channel.send(':exclamation: リセット処理を実行\n')
         flag = True
         o_flag = True
