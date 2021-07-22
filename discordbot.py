@@ -1,6 +1,6 @@
 """
 ＿/＿/＿/＿/＿/＿/＿/＿/
-＿/   ver 2.3.5β   ＿/
+＿/   ver 2.3.5.2β   ＿/
 _/＿/＿/＿/＿/＿/＿/＿/
 """
 # TODO: コマンドフィックス変更
@@ -86,7 +86,7 @@ help.add_field(
 # TODO: バージョンアップ時変更
 help.set_footer(
     text='made by Farrule\n'
-    '@bot_chan verstion: 2.3.5β',
+    '@bot_chan verstion: 2.3.5.2β',
     icon_url='https://cdn.discordapp.com/'
     'attachments/865123798813900820/865258524971106314/Farrule_logo2.jfif')
 
@@ -103,7 +103,7 @@ async def on_ready():
     print()
     print('-------------------------------------------------------------------------------')
     # TODO: バージョンアップ時変更
-    await client.change_presence(activity=discord.Game(name='@bot_chan v2.3.5β'))
+    await client.change_presence(activity=discord.Game(name='@bot_chan v2.3.5.2β'))
 
 
 # ? コマンド入力時処理
@@ -166,7 +166,7 @@ async def on_message(mes):
 # ? 各リアクションボタン処理
 @client.event
 async def on_raw_reaction_add(reaction):
-    global flag, REACTION_LIST, o_flag, MEMBER_LIST, m_count, b_count
+    global flag, REACTION_LIST, o_flag, MEMBER_LIST, m_count, b_count, m
 
     # 募集人数カウンタ
     def mem_counter():
@@ -202,32 +202,34 @@ async def on_raw_reaction_add(reaction):
             await bot_message.edit(content='募集が__中止__されました。\n')
             resetter()
 
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.5)
 
         # ! 参加ボタン処理
+        if o_flag is False:
+            #print('run')
+            await bot_message.add_reaction(ERROR)
+            await asyncio.sleep(1)
+            await bot_message.clear_reaction(ERROR)
+            #print('run2')
+            o_flag = True
+            return
+
         for i in REACTION_LIST:
             if reaction.emoji.name == i:
-                if o_flag is False:
-                    await bot_message.add_reaction(ERROR)
-                    await asyncio.sleep(1)
-                    await bot_message.clear_reaction(ERROR)
-                    o_flag = True
-                    return o_flag
-                else:
-                    mem_counter()
+                mem_counter()
+                mem_sort()
+                await bot_message.clear_reaction(i)
+                await bot_message.edit(
+                    content=f':loudspeaker: @here ***{args[1]}*** で'
+                    f' ***{args[2]}*** /_{limit}_ 人募集中です。\n'
+                    f':pushpin: 参加者:\n       {MEMBER_DIS}')
+                if args[2] == '0':
+                    await bot_message.clear_reaction(CANCEL)
                     mem_sort()
-                    await bot_message.clear_reaction(i)
                     await bot_message.edit(
-                        content=f':loudspeaker: @here ***{args[1]}*** で'
-                        f' ***{args[2]}*** /_{limit}_ 人募集中です。\n'
+                        content=f'***{args[1]}*** の募集は__終了__しました。\n'
                         f':pushpin: 参加者:\n       {MEMBER_DIS}')
-                    if args[2] == '0':
-                        await bot_message.clear_reaction(CANCEL)
-                        mem_sort()
-                        await bot_message.edit(
-                            content=f'***{args[1]}*** の募集は__終了__しました。\n'
-                            f':pushpin: 参加者:\n       {MEMBER_DIS}')
-                        resetter()
+                    resetter()
             else:
                 return
     else:
@@ -238,15 +240,18 @@ async def on_raw_reaction_add(reaction):
 # ? リアクションボタン メンバーリスト追加処理
 @client.event
 async def on_reaction_add(reaction, user):
-    global MEMBER_LIST, o_flag, m_count
+    global MEMBER_LIST, o_flag, m_count, m
     reaction
 
     if m_count >= m + 1:
         user = user.name
         if user in MEMBER_LIST:
+            #print(user)
             o_flag = False
+            print(o_flag)
             return o_flag
         else:
+            #print(user)
             o_flag = True
             MEMBER_LIST.append(user)
             return o_flag
