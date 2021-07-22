@@ -163,37 +163,28 @@ async def on_message(mes):
         MEMBER_DIS = []
 
 
-# ? リアクションボタン メンバーリスト追加処理
-@client.event
-async def on_reaction_add(reaction, user):
-    global MEMBER_LIST, o_flag, m_count
-    reaction
-
-    if m_count >= m + 1:
-        user = user.name
-        if user in MEMBER_LIST:
-            o_flag = False
-            return
-        else:
-            o_flag = True
-            MEMBER_LIST.append(user)
-    else:
-        m_count = m_count + 1
-
-
 # ? 各リアクションボタン処理
 @client.event
 async def on_raw_reaction_add(reaction):
     global flag, REACTION_LIST, o_flag, MEMBER_LIST, m_count, b_count
 
     # 募集人数カウンタ
-    def b_process_1():
+    def mem_counter():
         mem = int(args[2])
         mem = mem - 1
         args[2] = str(mem)
 
+    # メンバーリスト整列
+
+    def mem_sort():
+        global MEMBER_LIST, bot_name, MEMBER_DIS
+        if bot_name in MEMBER_LIST:
+            MEMBER_LIST.remove(bot_name)
+        MEMBER_DIS = ',    '.join(MEMBER_LIST)
+
     # 要素リセット
-    def b_process_2():
+
+    def resetter():
         global flag, o_flag, b_count, m_count, MEMBER_LIST, MEMBER_DIS
         flag = True
         o_flag = True
@@ -202,13 +193,6 @@ async def on_raw_reaction_add(reaction):
         MEMBER_LIST = []
         MEMBER_DIS = []
 
-    # メンバーリスト整列
-    def b_process_3():
-        global MEMBER_LIST, bot_name, MEMBER_DIS
-        if bot_name in MEMBER_LIST:
-            MEMBER_LIST.remove(bot_name)
-        MEMBER_DIS = ',    '.join(MEMBER_LIST)
-
     if b_count >= m + 1:
         # ! CANCELボタン処理
         if reaction.emoji.name == CANCEL:
@@ -216,7 +200,7 @@ async def on_raw_reaction_add(reaction):
             for y in range(m):
                 await bot_message.clear_reaction(REACTION_LIST[y])
             await bot_message.edit(content='募集が__中止__されました。\n')
-            b_process_2()
+            resetter()
 
         await asyncio.sleep(0.1)
 
@@ -228,10 +212,10 @@ async def on_raw_reaction_add(reaction):
                     await asyncio.sleep(1)
                     await bot_message.clear_reaction(ERROR)
                     o_flag = True
-                    return
+                    return o_flag
                 else:
-                    b_process_1()
-                    b_process_3()
+                    mem_counter()
+                    mem_sort()
                     await bot_message.clear_reaction(i)
                     await bot_message.edit(
                         content=f':loudspeaker: @here ***{args[1]}*** で'
@@ -239,16 +223,36 @@ async def on_raw_reaction_add(reaction):
                         f':pushpin: 参加者:\n       {MEMBER_DIS}')
                     if args[2] == '0':
                         await bot_message.clear_reaction(CANCEL)
-                        b_process_3()
+                        mem_sort()
                         await bot_message.edit(
                             content=f'***{args[1]}*** の募集は__終了__しました。\n'
                             f':pushpin: 参加者:\n       {MEMBER_DIS}')
-                        b_process_2()
+                        resetter()
             else:
                 return
     else:
         b_count = b_count + 1
-        return
+        return b_count
+
+
+# ? リアクションボタン メンバーリスト追加処理
+@client.event
+async def on_reaction_add(reaction, user):
+    global MEMBER_LIST, o_flag, m_count
+    reaction
+
+    if m_count >= m + 1:
+        user = user.name
+        if user in MEMBER_LIST:
+            o_flag = False
+            return o_flag
+        else:
+            o_flag = True
+            MEMBER_LIST.append(user)
+            return o_flag
+    else:
+        m_count = m_count + 1
+        return m_count
 
 
 client.run(TOKEN)
