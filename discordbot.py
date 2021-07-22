@@ -1,6 +1,6 @@
 """
 ＿/＿/＿/＿/＿/＿/＿/＿/
-＿/   ver 2.3.4β   ＿/
+＿/   ver 2.3.5β   ＿/
 _/＿/＿/＿/＿/＿/＿/＿/
 """
 # TODO: コマンドフィックス変更
@@ -86,7 +86,7 @@ help.add_field(
 # TODO: バージョンアップ時変更
 help.set_footer(
     text='made by Farrule\n'
-    '@bot_chan verstion: 2.3.4β',
+    '@bot_chan verstion: 2.3.5β',
     icon_url='https://cdn.discordapp.com/'
     'attachments/865123798813900820/865258524971106314/Farrule_logo2.jfif')
 
@@ -103,7 +103,7 @@ async def on_ready():
     print()
     print('-------------------------------------------------------------------------------')
     # TODO: バージョンアップ時変更
-    await client.change_presence(activity=discord.Game(name='@bot_chan v2.3.4β'))
+    await client.change_presence(activity=discord.Game(name='@bot_chan v2.3.5β'))
 
 
 # ? コマンド入力時処理
@@ -160,6 +160,7 @@ async def on_message(mes):
         b_count = 0
         m_count = 0
         MEMBER_LIST = []
+        MEMBER_DIS = []
 
 
 # ? リアクションボタン メンバーリスト追加処理
@@ -193,12 +194,13 @@ async def on_raw_reaction_add(reaction):
 
     # 要素リセット
     def b_process_2():
-        global flag, o_flag, b_count, m_count, MEMBER_LIST
+        global flag, o_flag, b_count, m_count, MEMBER_LIST, MEMBER_DIS
         flag = True
         o_flag = True
         b_count = 0
         m_count = 0
         MEMBER_LIST = []
+        MEMBER_DIS = []
 
     # メンバーリスト整列
     def b_process_3():
@@ -247,5 +249,6 @@ async def on_raw_reaction_add(reaction):
     else:
         b_count = b_count + 1
         return
+
 
 client.run(TOKEN)
