@@ -206,11 +206,11 @@ async def on_raw_reaction_add(reaction):
 
         # ! 参加ボタン処理
         if o_flag is False:
-            #print('run')
+            # print('run')
             await bot_message.add_reaction(ERROR)
             await asyncio.sleep(1)
             await bot_message.clear_reaction(ERROR)
-            #print('run2')
+            # print('run2')
             o_flag = True
             return
 
@@ -246,12 +246,12 @@ async def on_reaction_add(reaction, user):
     if m_count >= m + 1:
         user = user.name
         if user in MEMBER_LIST:
-            #print(user)
+            # print(user)
             o_flag = False
             print(o_flag)
             return o_flag
         else:
-            #print(user)
+            # print(user)
             o_flag = True
             MEMBER_LIST.append(user)
             return o_flag
