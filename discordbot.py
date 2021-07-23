@@ -102,7 +102,7 @@ async def on_ready():
     print(sys.version)  # Python バージョン
     print()
     print('-------------------------------------------------------------------------------')
-    #TODO: バージョンアップ時変更
+    # TODO: バージョンアップ時変更
     await client.change_presence(activity=discord.Game(name='@bot_chan v3.3.3β'))
 
 
@@ -215,7 +215,7 @@ async def on_raw_reaction_add(reaction):
         MEMBER_DIS = []
 
     if b_count >= m + 1:
-        #! CANCELボタン処理
+        # ! CANCELボタン処理
         if reaction.emoji.name == CANCEL:
             await bot_message.clear_reaction(CANCEL)
             for y in range(m):
@@ -225,7 +225,7 @@ async def on_raw_reaction_add(reaction):
 
         await asyncio.sleep(0.1)
 
-        #! 参加ボタン処理
+        # ! 参加ボタン処理
         if reaction.emoji.name == ONE:
             if o_flag is False:
                 await bot_message.add_reaction(ERROR)
