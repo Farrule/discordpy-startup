@@ -1,6 +1,6 @@
 """
 ＿/＿/＿/＿/＿/＿/＿/＿/
-＿/   ver 2.3.5.2β   ＿/
+＿/   ver 2.4.0β   ＿/
 _/＿/＿/＿/＿/＿/＿/＿/
 """
 # TODO: コマンドフィックス変更
@@ -11,12 +11,11 @@ import discord
 import re
 import sys
 import asyncio
-import os
 
 
 client = discord.Client()
 # TODO:os.environ['DISCORD_BOT_TOKEN']
-TOKEN = os.environ['DISCORD_BOT_TOKEN']
+TOKEN = 'ODUzMjQ2NDI5NzAyNzgyOTk2.YMSlqQ.F5fI4mRtoxO5SRfnRpDvVtEgh64'
 flag = True
 o_flag = True
 b_count = 0
@@ -49,14 +48,14 @@ help = discord.Embed(
     description='募集したい内容を、人数を設定して募集をかけることが出きるbotです。\n'
     '各コマンドの使い方は以下を御参照ください。\n',
     color=discord.Color.red())
-# help !at使い方
+# help ?at使い方
 help.add_field(
     name=':loudspeaker: 各コマンドの使い方\n',
     value=':pushpin:***募集を募るコマンド***\n'
     '   募集の際に使うこのbotの基本となるコマンド\n'
     '\n'
     '   ***記述方法***\n'
-    '   **!at 「募集要項」 「人数」**\n'
+    '   **?at 「募集要項」 「人数」**\n'
     '\n'
     '   ※各要素に必ず半角スペースを１つ設けてください。\n'
     '   ※鍵かっこをつける必要はありません。\n'
@@ -67,7 +66,7 @@ help.add_field(
     '   コマンド実行時などにバグが発生した際に一時的な対策として使うコマンド\n'
     '\n'
     '   ***記述方法***\n'
-    '   **!atre**\n',
+    '   **?atre**\n',
     inline=False)
 # help リアクションについて
 help.add_field(
@@ -86,7 +85,7 @@ help.add_field(
 # TODO: バージョンアップ時変更
 help.set_footer(
     text='made by Farrule\n'
-    '@bot_chan verstion: 2.3.5.2β',
+    '@bot_chan verstion: 2.4.0β',
     icon_url='https://cdn.discordapp.com/'
     'attachments/865123798813900820/865258524971106314/Farrule_logo2.jfif')
 
@@ -103,7 +102,7 @@ async def on_ready():
     print()
     print('-------------------------------------------------------------------------------')
     # TODO: バージョンアップ時変更
-    await client.change_presence(activity=discord.Game(name='@bot_chan v2.3.5.2β'))
+    await client.change_presence(activity=discord.Game(name='@bot_chan v2.4.0β'))
 
 
 # ? コマンド入力時処理
@@ -116,8 +115,8 @@ async def on_message(mes):
     global bot_message, m_count, b_count, m, REACTION_LIST, args
     args = mes.content.split()
 
-    # ! !at 処理
-    if args[0] == '!at':
+    # ! ?at 処理
+    if args[0] == '?at':
         if flag is True:
             if re.compile(r'\d+').search(args[2]):
                 m = int(args[2])
@@ -148,12 +147,12 @@ async def on_message(mes):
                 ':warning:  __募集中__の要項があります。\n')
             return
 
-    # ! !help 処理
-    if args[0] == '!help':
+    # ! ?help 処理
+    if args[0] == '?help':
         await mes.channel.send(embed=help)
 
-    # ! !atre 処理
-    if args[0] == '!atre':
+    # ! ?atre 処理
+    if args[0] == '?atre':
         await mes.channel.send(':exclamation: リセット処理を実行\n')
         flag = True
         o_flag = True
@@ -214,24 +213,34 @@ async def on_raw_reaction_add(reaction):
             o_flag = True
             return
 
-        for i in REACTION_LIST:
-            if reaction.emoji.name == i:
-                mem_counter()
-                mem_sort()
-                await bot_message.clear_reaction(i)
-                await bot_message.edit(
-                    content=f':loudspeaker: @here ***{args[1]}*** で'
-                    f' ***{args[2]}*** /_{limit}_ 人募集中です。\n'
-                    f':pushpin: 参加者:\n       {MEMBER_DIS}')
-                if args[2] == '0':
-                    await bot_message.clear_reaction(CANCEL)
+
+        if o_flag is False:
+            # print('run')
+            await bot_message.add_reaction(ERROR)
+            await asyncio.sleep(1)
+            await bot_message.clear_reaction(ERROR)
+            # print('run2')
+            o_flag = True
+            return
+        else:
+            for i in REACTION_LIST:
+                if reaction.emoji.name == i:
+                    mem_counter()
                     mem_sort()
+                    await bot_message.clear_reaction(i)
                     await bot_message.edit(
-                        content=f'***{args[1]}*** の募集は__終了__しました。\n'
+                        content=f':loudspeaker: @here ***{args[1]}*** で'
+                        f' ***{args[2]}*** /_{limit}_ 人募集中です。\n'
                         f':pushpin: 参加者:\n       {MEMBER_DIS}')
-                    resetter()
-            else:
-                return
+                    if args[2] == '0':
+                        await bot_message.clear_reaction(CANCEL)
+                        mem_sort()
+                        await bot_message.edit(
+                            content=f'***{args[1]}*** の募集は__終了__しました。\n'
+                            f':pushpin: 参加者:\n       {MEMBER_DIS}')
+                        await bot_message.channel.send('@here 準備してください。\n')
+                        resetter()
+                        break
     else:
         b_count = b_count + 1
         return b_count
@@ -248,7 +257,7 @@ async def on_reaction_add(reaction, user):
         if user in MEMBER_LIST:
             # print(user)
             o_flag = False
-            print(o_flag)
+            # print(o_flag)
             return o_flag
         else:
             # print(user)
