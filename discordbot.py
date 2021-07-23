@@ -116,8 +116,8 @@ async def on_message(mes):
     global bot_message, m_count, b_count, m, REACTION_LIST, args
     args = mes.content.split()
 
-    # ! ?at 処理
-    if args[0] == '?at':
+    # ! !at 処理
+    if args[0] == '!at':
         if flag is True:
             if re.compile(r'\d+').search(args[2]):
                 m = int(args[2])
@@ -148,12 +148,12 @@ async def on_message(mes):
                 ':warning:  __募集中__の要項があります。\n')
             return
 
-    # ! ?help 処理
-    if args[0] == '?help':
+    # ! !help 処理
+    if args[0] == '!help':
         await mes.channel.send(embed=help)
 
-    # ! ?atre 処理
-    if args[0] == '?atre':
+    # ! !atre 処理
+    if args[0] == '!atre':
         await mes.channel.send(':exclamation: リセット処理を実行\n')
         flag = True
         o_flag = True
