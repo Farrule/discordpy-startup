@@ -11,11 +11,12 @@ import discord
 import re
 import sys
 import asyncio
+import os
 
 
 client = discord.Client()
 # TODO:os.environ['DISCORD_BOT_TOKEN']
-TOKEN = 'ODUzMjQ2NDI5NzAyNzgyOTk2.YMSlqQ.F5fI4mRtoxO5SRfnRpDvVtEgh64'
+TOKEN = os.environ['DISCORD_BOT_TOKEN']
 flag = True
 o_flag = True
 b_count = 0
@@ -212,7 +213,6 @@ async def on_raw_reaction_add(reaction):
             # print('run2')
             o_flag = True
             return
-
 
         if o_flag is False:
             # print('run')
