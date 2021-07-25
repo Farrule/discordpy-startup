@@ -1,6 +1,6 @@
 """
 ＿/＿/＿/＿/＿/＿/＿/＿/
-＿/   ver 1.0.1.1  ＿/
+＿/    ver 1.0.2   ＿/
 _/＿/＿/＿/＿/＿/＿/＿/
 """
 
@@ -19,7 +19,7 @@ TOKEN = os.environ['DISCORD_BOT_TOKEN']
 bot = commands.Bot(command_prefix='!')
 Emcompre = '!'
 # TODO:バージョン変更時
-botver = '1.0.1.1'
+botver = '1.0.2'
 
 flag = True
 b_count = 0
@@ -45,12 +45,14 @@ ERROR = '\N{WARNING SIGN}'
 REACTION_LIST = [
     ONE, TWO, THREE, FOUR, FIVE,
     SIX, SEVEN, EIGHT, NINE]
+
+
 # help_Embed
 help = discord.Embed(
     title='募集用bot 「@bot_chan」の使い方',
     description='募集したい内容を、人数を設定して募集をかけることが出きるbotです。\n'
     '各コマンドの使い方は以下を御参照ください。\n',
-    color=discord.Color.red())
+    color=discord.Color.green())
 # help ?at使い方
 help.add_field(
     name=':loudspeaker: 各コマンドの使い方\n',
@@ -85,16 +87,31 @@ help.add_field(
     ':pushpin:募集中止ボタンについて\n'
     '   募集中止ボタンは押した時点で__募集を取り消す__ことができます。\n')
 # help developper info
-# TODO: バージョンアップ時変更
 help.set_footer(
     text='made by Farrule\n'
     '@bot_chan verstion: @bot_chan ' + botver,
     icon_url='https://cdn.discordapp.com/'
     'attachments/865123798813900820/865258524971106314/Farrule_logo2.jfif')
 
+# up_Embed
+# TODO: バージョンアップ時変更
+up = discord.Embed(
+    title='アップデート内容',
+    color=discord.Color.red()
+)
+up.add_field(
+    name=':wrench: ver' + botver + 'アップデート\n',
+    value='プログラムの根幹部分を最適化\n'
+    'プログラムの修正を簡易化\n'
+    '!upコマンドの追加\n'
+    '!helpコマンドのコマンド名をを!hpに変更\n'
+)
+up.set_footer(
+    text='date 25, 7, 2021'
+)
 
-# 要素リセット
-def resetter():
+
+def resetter():  # 要素リセット
     global flag, MEMBER_LIST, MEMBER_DIS, b_count, o_flag, m_count
     flag = True
     b_count = 0
@@ -103,10 +120,8 @@ def resetter():
     MEMBER_LIST = []
     MEMBER_DIS = []
 
-    # ? 起動時処理
 
-
-@bot.event
+@bot.event  # ? 起動時処理
 async def on_ready():
     print('-----------------------------------------------------\n')
     print('run')
@@ -116,22 +131,28 @@ async def on_ready():
     print(sys.version + '\n')
     print('-----------------------------------------------------')
     await bot.change_presence(activity=discord.Game(name='@bot_chan ' + botver))
-# ? $help コマンド入力時処理
 
 
+# ? up コマンド入力処理
+@bot.command()
+async def up(ctx):
+    await ctx.send()
+
+
+# ? help コマンド入力時処理
 @bot.command()
 async def hp(ctx):
     await ctx.send(embed=help)
-# ? $atre コマンド入力時処理
 
 
+# ? atre コマンド入力時処理
 @bot.command()
 async def atre(ctx):
     resetter()
     await ctx.send(':exclamation: リセット処理を実行\n')
-# ? $at コマンド入力時処理
 
 
+# ? at コマンド入力時処理
 @bot.command()
 async def at(ctx, game, mem):
     global flag, bot_name, m, member_count, bot_mes, game_title
@@ -166,22 +187,45 @@ async def at(ctx, game, mem):
         await ctx.send(
             ':warning:  __募集中__の要項があります。\n'
         )
+
+
+# ? リアクションボタン メンバーリスト追加処理
+@bot.event
+async def on_reaction_add(reaction, user):
+    global MEMBER_LIST, o_flag, m_count, m
+    reaction
+
+    if m_count >= m + 1:
+        user = user.name
+        if user in MEMBER_LIST:
+            # print(user)
+            o_flag = False
+            # print(o_flag)
+            return o_flag
+        else:
+            # print(user)
+            o_flag = True
+            MEMBER_LIST.append(user)
+            return o_flag
+    else:
+        m_count += 1
+        return m_count
+
+
 # ? 各リアクション処理
-
-
 @bot.event
 async def on_raw_reaction_add(reaction):
     global b_count, o_flag
-    # 募集人数カウンタ
 
+    # 募集人数カウンタ
     def mem_counter():
         global member_count
         m_c = int(member_count)
         m_c -= 1
         member_count = str(m_c)
         return member_count
-    # メンバーリスト整列
 
+    # メンバーリスト整列
     def mem_sort():
         global MEMBER_LIST, MEMBER_DIS
         if bot_name in MEMBER_LIST:
@@ -417,29 +461,6 @@ async def on_raw_reaction_add(reaction):
     else:
         b_count += 1
         return b_count
-# ? リアクションボタン メンバーリスト追加処理
-
-
-@bot.event
-async def on_reaction_add(reaction, user):
-    global MEMBER_LIST, o_flag, m_count, m
-    reaction
-
-    if m_count >= m + 1:
-        user = user.name
-        if user in MEMBER_LIST:
-            # print(user)
-            o_flag = False
-            # print(o_flag)
-            return o_flag
-        else:
-            # print(user)
-            o_flag = True
-            MEMBER_LIST.append(user)
-            return o_flag
-    else:
-        m_count += 1
-        return m_count
 
 
 bot.run(TOKEN)
