@@ -1,6 +1,6 @@
 """
 ＿/＿/＿/＿/＿/＿/＿/＿/
-＿/   ver 1.0.0    ＿/
+＿/   ver 1.0.1    ＿/
 _/＿/＿/＿/＿/＿/＿/＿/
 """
 
@@ -8,9 +8,7 @@ _/＿/＿/＿/＿/＿/＿/＿/
 import asyncio
 import discord
 from discord.ext import commands
-from discord.ext.commands import bot
 import re
-import asyncio
 import sys
 import os
 
@@ -85,7 +83,7 @@ help.add_field(
 # TODO: バージョンアップ時変更
 help.set_footer(
     text='made by Farrule\n'
-    '@bot_chan verstion: @bot_chan v1.0.0',
+    '@bot_chan verstion: @bot_chan v1.0.1',
     icon_url='https://cdn.discordapp.com/'
     'attachments/865123798813900820/865258524971106314/Farrule_logo2.jfif')
 
@@ -113,7 +111,7 @@ async def on_ready():
     print(sys.version + '\n')
     print('-----------------------------------------------------')
     # TODO: バージョンアップ時変更
-    await bot.change_presence(activity=discord.Game(name='@bot_chan v1.0.0'))
+    await bot.change_presence(activity=discord.Game(name='@bot_chan v1.0.1'))
 # ? $help コマンド入力時処理
 
 
@@ -194,6 +192,7 @@ async def on_raw_reaction_add(reaction):
                 await bot_mes.clear_reaction(REACTION_LIST[y])
             await bot_mes.edit(content='募集が__中止__されました。\n')
             resetter()
+
         await asyncio.sleep(0.1)
         # ! 参加ボタン処理
         if reaction.emoji.name == ONE:
