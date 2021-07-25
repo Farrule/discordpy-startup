@@ -1,6 +1,6 @@
 """
 ＿/＿/＿/＿/＿/＿/＿/＿/
-＿/   ver 1.0.1    ＿/
+＿/   ver 1.0.1.1  ＿/
 _/＿/＿/＿/＿/＿/＿/＿/
 """
 
@@ -15,7 +15,12 @@ import os
 
 # TODO:os.environ['DISCORD_BOT_TOKEN']
 TOKEN = os.environ['DISCORD_BOT_TOKEN']
-bot = commands.Bot(command_prefix='$')
+# TODO:コマンド変更時
+bot = commands.Bot(command_prefix='!')
+Emcompre = '!'
+# TODO:バージョン変更時
+botver = '1.0.1.1'
+
 flag = True
 b_count = 0
 o_flag = 0
@@ -53,7 +58,7 @@ help.add_field(
     '   募集の際に使うこのbotの基本となるコマンド\n'
     '\n'
     '   ***記述方法***\n'
-    '   **?at 「募集要項」 「人数」**\n'
+    '   **' + Emcompre + 'at 「募集要項」 「人数」**\n'
     '\n'
     '   ※各要素に必ず半角スペースを１つ設けてください。\n'
     '   ※鍵かっこをつける必要はありません。\n'
@@ -64,7 +69,7 @@ help.add_field(
     '   コマンド実行時などにバグが発生した際に一時的な対策として使うコマンド\n'
     '\n'
     '   ***記述方法***\n'
-    '   **?atre**\n',
+    '   **' + Emcompre + 'atre**\n',
     inline=False)
 # help リアクションについて
 help.add_field(
@@ -83,7 +88,7 @@ help.add_field(
 # TODO: バージョンアップ時変更
 help.set_footer(
     text='made by Farrule\n'
-    '@bot_chan verstion: @bot_chan v1.0.1',
+    '@bot_chan verstion: @bot_chan ' + botver,
     icon_url='https://cdn.discordapp.com/'
     'attachments/865123798813900820/865258524971106314/Farrule_logo2.jfif')
 
@@ -110,8 +115,7 @@ async def on_ready():
     print(discord.__version__)
     print(sys.version + '\n')
     print('-----------------------------------------------------')
-    # TODO: バージョンアップ時変更
-    await bot.change_presence(activity=discord.Game(name='@bot_chan v1.0.1'))
+    await bot.change_presence(activity=discord.Game(name='@bot_chan ' + botver))
 # ? $help コマンド入力時処理
 
 
