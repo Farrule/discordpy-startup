@@ -136,7 +136,7 @@ async def on_ready():
 # ? up コマンド入力処理
 @bot.command()
 async def up(ctx):
-    await ctx.send()
+    await ctx.send(embed=up)
 
 
 # ? help コマンド入力時処理
