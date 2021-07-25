@@ -93,20 +93,20 @@ help.set_footer(
     icon_url='https://cdn.discordapp.com/'
     'attachments/865123798813900820/865258524971106314/Farrule_logo2.jfif')
 
-# up_Embed
+# update_Embed
 # TODO: バージョンアップ時変更
-up = discord.Embed(
+update = discord.Embed(
     title='アップデート内容',
     color=discord.Color.red()
 )
-up.add_field(
+update.add_field(
     name=':wrench: ver' + botver + 'アップデート\n',
     value='プログラムの根幹部分を最適化\n'
     'プログラムの修正を簡易化\n'
     '!upコマンドの追加\n'
     '!helpコマンドのコマンド名をを!hpに変更\n'
 )
-up.set_footer(
+update.set_footer(
     text='date 25, 7, 2021'
 )
 
@@ -136,7 +136,7 @@ async def on_ready():
 # ? up コマンド入力処理
 @bot.command()
 async def up(ctx):
-    await ctx.send(embed=up)
+    await ctx.send(embed=update)
 
 
 # ? help コマンド入力時処理
