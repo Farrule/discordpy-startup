@@ -130,7 +130,7 @@ async def on_ready():
     print(discord.__version__)
     print(sys.version + '\n')
     print('-----------------------------------------------------')
-    await bot.change_presence(activity=discord.Game(name='!at 募集内容 人数 |'))
+    await bot.change_presence(activity=discord.Game(name='Stay tuned...'))
 
 
 # ? up コマンド入力処理
